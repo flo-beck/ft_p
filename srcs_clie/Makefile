@@ -6,11 +6,11 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/12 11:58:04 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/14 11:11:23 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME				= client
+NAME				= ../client
 
 CC					= gcc
 FLAG				= -Wall -Werror -Wextra -pedantic

@@ -6,11 +6,11 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/12 11:58:50 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/14 11:46:41 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME				= server
+NAME				= ../server
 
 CC					= gcc
 FLAG				= -Wall -Werror -Wextra -pedantic
@@ -18,6 +18,7 @@ INCS				= -I ./includes -I ../libft/includes
 LIBS				= -L ../libft/ -lft
 
 SRC					= srcs/ft_server.c \
+					  srcs/ft_accept_client.c \
 
 DIR_SRC				= srcs
 DIR_INC				= includes
