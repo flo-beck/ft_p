@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 11:14:27 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 12:36:54 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/16 19:39:38 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,19 @@
 
 t_cmd					*ft_get_cmds(void)
 {
-	static t_cmd		*cmds = NULL;
+	t_cmd				*cmds = NULL;
 
 	if (!cmds)
 	{
 		if (!(cmds = (t_cmd *)malloc(sizeof(t_cmd) * (NUM_CMDS + 1))))
 			return (cmds);
-			/*ft_error("Failed to malloc 'cmds'");*/
-		cmds[NUM_CMDS].name = NULL;
-		cmds[0].name = "ls";
-		cmds[0].fn = &ft_ls;
-		cmds[1].name = "quit";
-		cmds[1].fn = &ft_quit;
-		/*cmds[2].name = "put";
-		cmds[2].fn = &ft_put;
-		cmds[3].name = "get";
-		cmds[3].fn = &ft_get;
-		cmds[4].name = "pwd";
-		cmds[4].fn = &ft_pwd;
-		cmds[5].name = "cd";
-		cmds[5].fn = &ft_cd;*/
+		(cmds[NUM_CMDS]).fn = NULL;
+		(cmds[0]).fn = &ft_ls;
+		(cmds[1]).fn = &ft_quit;
+		(cmds[2]).fn = &ft_cd;
+		(cmds[3]).fn = &ft_get;
+		(cmds[4]).fn = &ft_put;
+		(cmds[5]).fn = &ft_pwd;
 	}
 	return (cmds);
 }
@@ -50,33 +43,35 @@ void					ft_read_client(t_e *e, int cs)
 	char				buf[BS + 1];
 	int					i;
 	char				*res;
+	int					cmd_num;
 
 	while ((r = read(cs, buf, BS)) > 0 && !e->quit)
 	{
 		buf[r] = '\0';
+		printf("buf received %s\n",buf );
 		i = 0;
-		while (e->cmds[i].name)
+		cmd_num = (buf[0] - '0') - 1;
+		printf("CMD_NUM %d\n",cmd_num );
+		if (cmd_num < NUM_CMDS)
 		{
-			if (!ft_strncmp(buf, e->cmds[i].name, 4))
-			{
-				printf("executing %s\n",e->cmds[i].name );
-				res = e->cmds[i].fn(e);
-				if ((res))
-					send(cs, res, ft_strlen(res), 0);
-				else
-				{
-					printf("sending ERROR\n");
-					send(cs, "ERROR\0", 6, 0);
-				}
-			}
-			i++;
-		/*	if ((res = ft_ls()))
+			printf("executing %d \n", cmd_num );
+			res = (e->cmds[cmd_num]).fn(e, buf);
+			if ((res))
 				send(cs, res, ft_strlen(res), 0);
 			else
-				send(cs, "ERROR\0", 6, 0);*/
+			{
+				printf("AN ERROR OCCURED SERVER SIDE\n");
+				send(cs, "888\0", 4, 0);
+			}
 		}
+		else
+		{
+			printf("Command not found\n");
+			send(cs, "999\0", 4, 0);
+		}
+		ft_bzero(buf, BS + 1);
 	}
-	printf("OUT OF WHILE\n");
+	printf("FINISHED READ OR RECEIVED QUIT - I.E. OUT OF WHILE\n");
 }
 
 void					ft_accept_client(t_e *e)

@@ -6,7 +6,7 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/16 13:08:48 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/16 18:47:32 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,10 @@ SRC_SER				= srcs_serv/ft_server.c \
 					  srcs_serv/ft_accept_client.c \
 					  srcs_serv/ft_ls.c \
 					  srcs_serv/ft_quit.c \
+					  srcs_serv/ft_cd.c \
+					  srcs_serv/ft_put.c \
+					  srcs_serv/ft_get.c \
+					  srcs_serv/ft_pwd.c \
 
 SRC_CLI				= srcs_clie/ft_client.c \
 
@@ -62,6 +66,7 @@ clean:
 	/bin/rm -rf $(DIR_OBJ);
 
 fclean: clean
+	$(MAKE) -C libft $@
 	/bin/rm -rf $(NAME_S) $(NAME_C);
 
 re: fclean all

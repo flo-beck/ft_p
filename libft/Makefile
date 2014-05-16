@@ -6,13 +6,13 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/07 23:06:12 by fbeck             #+#    #+#              #
-#    Updated: 2014/02/23 20:57:32 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/16 14:28:53 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME               = libft.a
 
-CC                 = clang
+CC                 = gcc
 FLAG               = -Wall -Werror -Wextra -pedantic
 INCS               = -I ./includes
 

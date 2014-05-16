@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 17:04:25 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 12:36:47 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/16 16:17:40 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,15 @@ void					ft_get_str(t_list *list, char **str)
 	/*printf("\n -------- \nSTR = %s\n ---------- \n", *str);*/
 }
 
-char					*ft_ls(t_e *e)
+char					*ft_ls(t_e *e, char *buf)
 {
 	DIR					*dirp;
 	struct dirent		*read;
 	t_list				*list;
 	char				*str;
 
-	(void) e;
+	(void)e;
+	(void)buf;
 	list = NULL;
 	dirp = opendir(".");
 	while ((read = readdir(dirp)))

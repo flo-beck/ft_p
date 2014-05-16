@@ -1,22 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.h                                           :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/05/12 12:02:55 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 12:28:35 by fbeck            ###   ########.fr       */
+/*   Created: 2014/05/16 18:46:55 by fbeck             #+#    #+#             */
+/*   Updated: 2014/05/16 18:47:06 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ftp.h"
 
-#ifndef CLIENT_H
-# define CLIENT_H
-
-#include <stdio.h> /* TAKE OUTT!!!!!!*/
-
-# define BS					1024
-# define QUIT				"Quit received, closing socket"
-
-#endif
+char					*ft_pwd(t_e *e, char *buf)
+{
+	(void)buf;
+	(void)e;
+	return (NULL);
+}

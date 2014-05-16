@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/12 12:04:11 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 12:37:22 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/16 20:01:51 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include "libft.h"
 #include "ftp.h"
 
@@ -26,6 +27,29 @@ static int			usage(char *str)
 	ft_putstr_fd(str, 2);
 	ft_putendl_fd(" [address] [port]", 2);
 	return (-1);
+}
+
+static void			ft_unknown_cmd(char *line)
+{
+	ft_putstr("Unkown command: ");
+	ft_putendl(line);
+}
+
+char				*ft_get_code(char *line)
+{
+	if (!ft_strcmp(line, "ls"))
+		return (ft_strdup(LS));
+	else if (!ft_strcmp(line, "quit"))
+		return (ft_strdup(QUIT));
+	else if (!ft_strncmp(line, "cd ", 3) && ft_strlen(line) > 3)
+		return (ft_strjoin(CD, &line[3]));
+	else if (!ft_strncmp(line, "get ", 4) && ft_strlen(line) > 4)
+		return (ft_strjoin(GET, &line[4]));
+	else if (!ft_strncmp(line, "put ", 4) && ft_strlen(line) > 4)
+		return (ft_strjoin(PUT, &line[4]));
+	else if (!ft_strcmp(line, "pwd"))
+		return (ft_strdup(PWD));
+	return (NULL);
 }
 
 int					create_client(char *addr, int port)
@@ -55,22 +79,32 @@ int						main(int ac, char **av)
 	int					sock;
 	char				*line;
 	char				buf[BS + 1];
+	char				*code;
 
 	if (ac != 3)
 		return(usage(av[0]));
 	ft_putendl("I AM THE CLIENT.");
 	port = ft_atoi(av[2]);
 	sock = create_client(av[1], port);
+	ft_putstr("client > ");
 	while((get_next_line(0, &line) > 0))
 	{
 		/*write(sock, line, ft_strlen(line));*/
-		ft_bzero(buf, BS + 1);
-		send(sock, line, ft_strlen(line), 0);
-		recv(sock, buf, BS, 0);
-		buf[BS] = '\0';
-		ft_putendl(buf);
-		if (!strcmp(buf, QUIT))
-			break ;
+		code = ft_get_code(line);
+		if (code)
+		{
+			ft_bzero(buf, BS + 1);
+			send(sock, code, ft_strlen(code), 0);
+			free(code);
+			recv(sock, buf, BS, 0);
+			buf[BS] = '\0';
+			ft_putendl(buf);
+			if (!strncmp(buf, QUIT, 3))
+				break ;
+		}
+		else
+			ft_unknown_cmd(line);
+		ft_putstr("client > ");
 	}
 	close(sock);
 	return (0);

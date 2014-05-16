@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_quit.c                                          :+:      :+:    :+:   */
+/*   ft_get.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbeck <fbeck@student.42.fr>                +#+  +:+       +#+        */
+/*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/05/15 17:42:41 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 17:55:25 by fbeck            ###   ########.fr       */
+/*   Created: 2014/05/16 18:45:25 by fbeck             #+#    #+#             */
+/*   Updated: 2014/05/16 18:45:54 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ftp.h"
 
-char					*ft_quit(t_e *e, char *buf)
+char					*ft_get(t_e *e, char *buf)
 {
 	(void)buf;
-	printf("IN FT QUIT\n");
-	e->quit = 1;
-	return (QUIT);
+	(void)e;
+	return (NULL);
 }
