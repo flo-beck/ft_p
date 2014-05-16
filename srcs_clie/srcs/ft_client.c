@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/12 12:04:11 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/14 17:49:05 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/15 17:35:18 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int						main(int ac, char **av)
 	int					port;
 	int					sock;
 	char				*line;
+	char				buf[BS + 1];
 
 	if (ac != 3)
 		return(usage(av[0]));
@@ -61,7 +62,19 @@ int						main(int ac, char **av)
 	port = ft_atoi(av[2]);
 	sock = create_client(av[1], port);
 	while((get_next_line(0, &line) > 0))
-		write(sock, line, ft_strlen(line));
+	{
+		/*write(sock, line, ft_strlen(line));*/
+
+
+/*issize_t
+     recv(int socket, void *buffer, size_t length, int flags);*/
+
+
+		send(sock, line, ft_strlen(line), 0);
+		recv(sock, buf, BS, 0);
+		buf[BS] = '\0';
+		ft_putendl(buf);
+	}
 	close(sock);
 	return (0);
 }

@@ -1,2 +1,6 @@
 client
 server
+libft/.obj
+libft/libft.a
+srcs_clie/.obj/
+srcs_serv/.obj/

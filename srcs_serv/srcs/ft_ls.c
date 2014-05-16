@@ -6,16 +6,18 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 17:04:25 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/14 17:44:14 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/15 17:37:22 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <dirent.h>
+#include <stdlib.h>
 #include "libft.h"
 #include "server.h"
 
 void					ft_del_elem(void *content, size_t size)
 {
+	(void)size;
 	free(content);
 }
 
@@ -46,12 +48,15 @@ void					ft_get_str(t_list *list, char **str)
 	while (ptr)
 	{
 		n = 0;
-		while (((char *)ptr->content)[n])
-			(*str)[i++] = ((char *)ptr->content)[n++];
-		(*str)[i++] = (ptr->next ? '\n' : '\0');
+		if (((char *)ptr->content)[0] != '.') // NOT HIDDEN
+		{
+			while (((char *)ptr->content)[n])
+				(*str)[i++] = ((char *)ptr->content)[n++];
+			(*str)[i++] = (ptr->next ? '\n' : '\0');
+		}
 		ptr = ptr->next;
 	}
-	printf("STR = %s\n", *str);
+	/*printf("\n -------- \nSTR = %s\n ---------- \n", *str);*/
 }
 
 char					*ft_ls(void)
@@ -65,10 +70,10 @@ char					*ft_ls(void)
 	dirp = opendir(".");
 	while ((read = readdir(dirp)))
 	{
-		ft_listadd_end(&list,
-				ft_listnew(read->d_name, ft_strlen(read->d_name)));
+		ft_lstadd_end(&list,
+				ft_lstnew(read->d_name, ft_strlen(read->d_name)));
 	}
-	closedir(".");
+	closedir(dirp);
 	ft_get_str(list, &str);
 	ft_lstdel(&list, ft_del_elem);
 	return (str);

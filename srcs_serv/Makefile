@@ -6,7 +6,7 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/14 11:46:41 by fbeck            ###   ########.fr        #
+#*   Updated: 2014/05/15 17:54:06 by fbeck            ###   ########.fr       *#
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ LIBS				= -L ../libft/ -lft
 
 SRC					= srcs/ft_server.c \
 					  srcs/ft_accept_client.c \
+					  srcs/ft_ls.c \
+					  srcs/ft_quit.c \
 
 DIR_SRC				= srcs
 DIR_INC				= includes

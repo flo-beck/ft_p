@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 11:14:27 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/14 17:48:38 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/15 17:59:51 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include "libft.h"
 #include "server.h"
 
@@ -24,20 +25,21 @@ static t_cmd			*ft_get_cmds(void)
 	if (!cmds)
 	{
 		if (!(cmds = (t_cmd *)malloc(sizeof(t_cmd) * (NUM_CMDS + 1))))
-			ft_error("Failed to malloc 'cmds'");
-		cmds[NUM_CMDS] = NULL;
+			return (cmds);
+			/*ft_error("Failed to malloc 'cmds'");*/
+		cmds[NUM_CMDS].name = NULL;
 		cmds[0].name = "ls";
 		cmds[0].fn = &ft_ls;
 		cmds[1].name = "quit";
 		cmds[1].fn = &ft_quit;
-		cmds[2].name = "put";
+		/*cmds[2].name = "put";
 		cmds[2].fn = &ft_put;
 		cmds[3].name = "get";
 		cmds[3].fn = &ft_get;
 		cmds[4].name = "pwd";
 		cmds[4].fn = &ft_pwd;
 		cmds[5].name = "cd";
-		cmds[5].fn = &ft_cd;
+		cmds[5].fn = &ft_cd;*/
 	}
 	return (cmds);
 }
@@ -59,17 +61,22 @@ void					ft_read_client(int cs)
 		{
 			if (!ft_strncmp(buf, cmds[i].name, 4))
 			{
-				res = cmds[i].ft();
+				printf("executing %s\n",cmds[i].name );
+				res = cmds[i].fn();
 				if ((res))
 					send(cs, res, ft_strlen(res), 0);
-				/*else
-					ft_send("ERROR", res);*/
+				else
+				{
+					printf("sending ERROR\n");
+					send(cs, "ERROR\0", 6, 0);
+				}
 			}
 			i++;
+		/*	if ((res = ft_ls()))
+				send(cs, res, ft_strlen(res), 0);
+			else
+				send(cs, "ERROR\0", 6, 0);*/
 		}
-	/*	else
-			ft_send("ERROR", buf);*/
-		/*ft_putendl(buf);*/
 	}
 }
 

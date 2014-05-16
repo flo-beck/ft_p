@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.h                                           :+:      :+:    :+:   */
+/*   ft_quit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: fbeck <fbeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/05/12 12:02:55 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/15 17:02:16 by fbeck            ###   ########.fr       */
+/*   Created: 2014/05/15 17:42:41 by fbeck             #+#    #+#             */
+/*   Updated: 2014/05/15 17:53:54 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "server.h"
 
-#ifndef CLIENT_H
-# define CLIENT_H
+char					*ft_quit(void)
+{
+	return (NULL);
 
-#include <stdio.h> /* TAKE OUTT!!!!!!*/
-
-# define BS			1024
-
-#endif
+}
