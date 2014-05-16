@@ -6,14 +6,14 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 17:04:25 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/15 17:37:22 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/16 12:36:47 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <dirent.h>
 #include <stdlib.h>
 #include "libft.h"
-#include "server.h"
+#include "ftp.h"
 
 void					ft_del_elem(void *content, size_t size)
 {
@@ -48,7 +48,7 @@ void					ft_get_str(t_list *list, char **str)
 	while (ptr)
 	{
 		n = 0;
-		if (((char *)ptr->content)[0] != '.') // NOT HIDDEN
+		if (((char *)ptr->content)[0] != '.') /*// NOT HIDDEN*/
 		{
 			while (((char *)ptr->content)[n])
 				(*str)[i++] = ((char *)ptr->content)[n++];
@@ -59,13 +59,14 @@ void					ft_get_str(t_list *list, char **str)
 	/*printf("\n -------- \nSTR = %s\n ---------- \n", *str);*/
 }
 
-char					*ft_ls(void)
+char					*ft_ls(t_e *e)
 {
 	DIR					*dirp;
 	struct dirent		*read;
 	t_list				*list;
 	char				*str;
 
+	(void) e;
 	list = NULL;
 	dirp = opendir(".");
 	while ((read = readdir(dirp)))

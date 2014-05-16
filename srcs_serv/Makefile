@@ -14,15 +14,14 @@ NAME				= ../server
 
 CC					= gcc
 FLAG				= -Wall -Werror -Wextra -pedantic
-INCS				= -I ./includes -I ../libft/includes
+INCS				= -I ../includes -I ../libft/includes
 LIBS				= -L ../libft/ -lft
 
-SRC					= srcs/ft_server.c \
-					  srcs/ft_accept_client.c \
-					  srcs/ft_ls.c \
-					  srcs/ft_quit.c \
+SRC					= ft_server.c \
+					  ft_accept_client.c \
+					  ft_ls.c \
+					  ft_quit.c \
 
-DIR_SRC				= srcs
 DIR_INC				= includes
 DIR_OBJ				= .obj
 
@@ -43,10 +42,6 @@ $(NAME): $(DIR_OBJ) $(OBJ)
 
 $(DIR_OBJ) :
 	/bin/mkdir $(DIR_OBJ); \
-		for DIR in $(DIR_LIST); \
-		do \
-		/bin/mkdir $(DIR_OBJ)/$$DIR; \
-		done
 
 clean:
 	$(MAKE) -C ../libft $@

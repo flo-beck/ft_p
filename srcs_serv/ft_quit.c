@@ -6,14 +6,15 @@
 /*   By: fbeck <fbeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/15 17:42:41 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/15 17:53:54 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/16 12:36:42 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "ftp.h"
 
-char					*ft_quit(void)
+char					*ft_quit(t_e *e)
 {
-	return (NULL);
-
+	printf("IN FT QUIT\n");
+	e->quit = 1;
+	return ("Quit received, closing socket");
 }

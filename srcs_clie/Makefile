@@ -6,7 +6,7 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/14 11:11:23 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/16 12:32:56 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME				= ../client
 
 CC					= gcc
 FLAG				= -Wall -Werror -Wextra -pedantic
-INCS				= -I ./includes -I ../libft/includes
+INCS				= -I ../includes -I ../libft/includes
 LIBS				= -L ../libft/ -lft
 
 SRC					= srcs/ft_client.c \

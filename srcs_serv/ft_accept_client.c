@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 11:14:27 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/15 17:59:51 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/16 12:36:54 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "libft.h"
-#include "server.h"
+#include "ftp.h"
 
-static t_cmd			*ft_get_cmds(void)
+t_cmd					*ft_get_cmds(void)
 {
 	static t_cmd		*cmds = NULL;
 
@@ -44,25 +44,23 @@ static t_cmd			*ft_get_cmds(void)
 	return (cmds);
 }
 
-void					ft_read_client(int cs)
+void					ft_read_client(t_e *e, int cs)
 {
 	int					r;
 	char				buf[BS + 1];
 	int					i;
 	char				*res;
-	t_cmd				*cmds;
 
-	cmds = ft_get_cmds();
-	while ((r = read(cs, buf, BS)) > 0)
+	while ((r = read(cs, buf, BS)) > 0 && !e->quit)
 	{
 		buf[r] = '\0';
 		i = 0;
-		while (cmds[i].name)
+		while (e->cmds[i].name)
 		{
-			if (!ft_strncmp(buf, cmds[i].name, 4))
+			if (!ft_strncmp(buf, e->cmds[i].name, 4))
 			{
-				printf("executing %s\n",cmds[i].name );
-				res = cmds[i].fn();
+				printf("executing %s\n",e->cmds[i].name );
+				res = e->cmds[i].fn(e);
 				if ((res))
 					send(cs, res, ft_strlen(res), 0);
 				else
@@ -78,23 +76,24 @@ void					ft_read_client(int cs)
 				send(cs, "ERROR\0", 6, 0);*/
 		}
 	}
+	printf("OUT OF WHILE\n");
 }
 
-void					ft_accept_client(int my_sock)
+void					ft_accept_client(t_e *e)
 {
 	int					pid;
 	int					client_socket;
 	struct sockaddr_in	csin;
 	unsigned int		cslen;
 
-	client_socket = accept(my_sock, (struct sockaddr *)&csin, &cslen);
+	client_socket = accept(e->sock, (struct sockaddr *)&csin, &cslen);
 	if (-1 == (pid = fork()))
 		return ;
 	if (pid == 0) /*fils*/
 	{
-		ft_read_client(client_socket);
+		ft_read_client(e, client_socket);
 		close(client_socket);
 	}
 	else /*pere*/
-		ft_accept_client(my_sock);
+		ft_accept_client(e);
 }
