@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/12 12:04:11 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 20:35:53 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/17 13:47:23 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static void				ft_init_e(t_e *e, char **envp)
 	e->cmds = ft_get_cmds();
 	e->serv_root = getcwd(NULL, MAXPATHLEN);
 	e->curr_pwd = ft_strdup("/");
+	e->depth = 0;
 }
 
 int						create_server(int port)

@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 12:33:28 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 20:27:43 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/17 20:23:54 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,19 @@
 # define BS					1024
 # define NUM_CMDS			6
 # define MAXPATHLEN			4096
+# define CODE_LEN			3
 
 # define LS					"100"
-# define QUIT				"200"
-# define CD					"300"
-# define GET				"400"
-# define PUT				"500"
-# define PWD				"600"
+# define CD					"200"
+# define GET				"300"
+# define GET_SIZE			"301"
+# define PUT				"400"
+# define PWD				"500"
+# define QUIT				"600"
+# define OK					"010"
+# define ERROR				"090"
+# define NO_FILE			"901"
+# define NO_MAP				"902"
 
 typedef struct 		s_e t_e;
 
@@ -43,6 +49,7 @@ struct				s_e
 	char			*serv_root;
 	char			*curr_pwd;
 	int				depth;
+	int				cs;
 };
 
 /*
@@ -63,5 +70,7 @@ char					*ft_pwd(t_e *e, char *buf);
 /*
 **	srcs_clie
 */
+void					ft_send_get(char *code, int sock);
+void					ft_send_put(char *code, int sock);
 
 #endif

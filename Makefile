@@ -6,7 +6,7 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/16 18:47:32 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/17 19:52:42 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,8 @@ SRC_SER				= srcs_serv/ft_server.c \
 					  srcs_serv/ft_pwd.c \
 
 SRC_CLI				= srcs_clie/ft_client.c \
+					  srcs_clie/ft_send_get.c \
+					  srcs_clie/ft_send_put.c \
 
 DIR_OBJ				= .obj
 DIR_LIST			= srcs_serv srcs_clie

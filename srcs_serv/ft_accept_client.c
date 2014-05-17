@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 11:14:27 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 19:39:38 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/17 20:36:04 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ t_cmd					*ft_get_cmds(void)
 			return (cmds);
 		(cmds[NUM_CMDS]).fn = NULL;
 		(cmds[0]).fn = &ft_ls;
-		(cmds[1]).fn = &ft_quit;
-		(cmds[2]).fn = &ft_cd;
-		(cmds[3]).fn = &ft_get;
-		(cmds[4]).fn = &ft_put;
-		(cmds[5]).fn = &ft_pwd;
+		(cmds[1]).fn = &ft_cd;
+		(cmds[2]).fn = &ft_get;
+		(cmds[3]).fn = &ft_put;
+		(cmds[4]).fn = &ft_pwd;
+		(cmds[5]).fn = &ft_quit;
 	}
 	return (cmds);
 }
@@ -60,8 +60,8 @@ void					ft_read_client(t_e *e, int cs)
 				send(cs, res, ft_strlen(res), 0);
 			else
 			{
-				printf("AN ERROR OCCURED SERVER SIDE\n");
-				send(cs, "888\0", 4, 0);
+				printf("THE PREVIOUS COMMAND FAILED OR WAS STOPPED\n");
+				/*send(cs, "888\0", 4, 0);*/
 			}
 		}
 		else
@@ -86,6 +86,7 @@ void					ft_accept_client(t_e *e)
 		return ;
 	if (pid == 0) /*fils*/
 	{
+		e->cs = client_socket;
 		ft_read_client(e, client_socket);
 		close(client_socket);
 	}

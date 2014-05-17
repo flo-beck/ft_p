@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/12 12:04:11 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 20:01:51 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/17 19:12:03 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,26 @@ static void			ft_unknown_cmd(char *line)
 	ft_putendl(line);
 }
 
-char				*ft_get_code(char *line)
+char				*ft_get_code(char *line, int sock)
 {
 	if (!ft_strcmp(line, "ls"))
 		return (ft_strdup(LS));
 	else if (!ft_strcmp(line, "quit"))
 		return (ft_strdup(QUIT));
+	else if (!ft_strcmp(line, "pwd"))
+		return (ft_strdup(PWD));
 	else if (!ft_strncmp(line, "cd ", 3) && ft_strlen(line) > 3)
 		return (ft_strjoin(CD, &line[3]));
 	else if (!ft_strncmp(line, "get ", 4) && ft_strlen(line) > 4)
-		return (ft_strjoin(GET, &line[4]));
+	{
+		ft_send_get(ft_strjoin(GET, &line[4]), sock);
+		return ("DONE");
+	}
 	else if (!ft_strncmp(line, "put ", 4) && ft_strlen(line) > 4)
-		return (ft_strjoin(PUT, &line[4]));
-	else if (!ft_strcmp(line, "pwd"))
-		return (ft_strdup(PWD));
+	{
+		ft_send_put(ft_strjoin(PUT, &line[4]), sock);
+		return ("DONE");
+	}
 	return (NULL);
 }
 
@@ -90,17 +96,20 @@ int						main(int ac, char **av)
 	while((get_next_line(0, &line) > 0))
 	{
 		/*write(sock, line, ft_strlen(line));*/
-		code = ft_get_code(line);
+		code = ft_get_code(line, sock);
 		if (code)
 		{
 			ft_bzero(buf, BS + 1);
-			send(sock, code, ft_strlen(code), 0);
-			free(code);
-			recv(sock, buf, BS, 0);
-			buf[BS] = '\0';
-			ft_putendl(buf);
-			if (!strncmp(buf, QUIT, 3))
-				break ;
+			if (ft_strcmp(code, "DONE"))
+			{
+				send(sock, code, ft_strlen(code), 0);
+				free(code);
+				recv(sock, buf, BS, 0);
+				buf[BS] = '\0';
+				ft_putendl(buf);
+				if (!strncmp(buf, QUIT, 3))
+					break ;
+			}
 		}
 		else
 			ft_unknown_cmd(line);
