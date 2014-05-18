@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 15:56:00 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 20:43:01 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:04:15 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include "ftp.h"
 
-int						ft_check_depth(t_e *e, char *path)
+static int				ft_check_depth(t_e *e, char *path)
 {
 	int					depth;
 	char				**split;
@@ -52,7 +52,7 @@ static void				ft_goto_root(t_e *e)
 		ft_error("[ERROR: Failed to change to root			]");
 }
 
-void					ft_update_pwd(t_e *e)
+static void				ft_update_pwd(t_e *e)
 {
 	char				*new_pwd;
 	char				*tmp;
@@ -61,16 +61,31 @@ void					ft_update_pwd(t_e *e)
 	tmp = e->curr_pwd;
 	new_pwd = getcwd(NULL, MAXPATHLEN);
 	i = ft_strlen(e->serv_root);
-	e->curr_pwd = (new_pwd[i] == '\0' ? ft_strdup("/") : ft_strdup(&new_pwd[i]));
+	e->curr_pwd = (new_pwd[i] == '\0' ?
+			ft_strdup("/") : ft_strdup(&new_pwd[i]));
 	free(new_pwd);
 	free(tmp);
+}
+
+static char				*ft_move_dir(t_e *e, char *path, int depth)
+{
+	int					res;
+
+	res = chdir(path);
+	if (res == 0)
+	{
+		ft_update_pwd(e);
+		e->depth = depth;
+		return (ft_strdup("SUCCESS: changed directory "));
+	}
+	else
+		return (ft_strjoin("Error: Could not change directory to ", path));
 }
 
 char					*ft_cd(t_e *e, char *buf)
 {
 	char				*path;
 	int					i;
-	int					res;
 	char				*msg;
 	int					depth;
 
@@ -81,15 +96,7 @@ char					*ft_cd(t_e *e, char *buf)
 	depth = ft_check_depth(e, path);
 	if (depth >= 0)
 	{
-		res = chdir(path);
-		if (res == 0)
-		{
-			ft_update_pwd(e);
-			e->depth = depth;
-			msg = ft_strdup("SUCCESS: changed directory ");
-		}
-		else
-			msg = ft_strjoin("Error: Could not change directory to ", path);
+		msg = ft_move_dir(e, path, depth);
 	}
 	else
 	{

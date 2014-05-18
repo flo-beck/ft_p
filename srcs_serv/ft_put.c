@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 18:46:04 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 21:50:17 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:47:25 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ int						ft_create_file(char *name)
 
 int						ft_check_ok(int sock, char *receive, int nf)
 {
-	if (!receive || nf < 0 )
+	if (!receive || nf < 0)
 	{
 		if (receive)
 		{
-			ft_putendl("[ERROR: File already exists			]");
+			ft_putendl("[ERROR: File already exists		]");
 			free(receive);
 		}
 		if (nf > 0)
@@ -85,7 +85,6 @@ int						ft_prepare(int sock, char *buf, t_nf *new)
 	send(sock, OK, ft_strlen(OK), 0);
 	return (0);
 }
-
 
 char					*ft_put(t_e *e, char *buf)
 {

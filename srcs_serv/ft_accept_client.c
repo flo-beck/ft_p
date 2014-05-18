@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 11:14:27 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 21:29:03 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:03:27 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,39 @@ t_cmd					*ft_get_cmds(void)
 	return (cmds);
 }
 
+static void				ft_treat_code(t_e *e, char *buf, char *res)
+{
+	int					i;
+	int					cmd_num;
+	char				*msg;
+
+	i = 0;
+	cmd_num = (buf[0] - '0') - 1;
+	if (cmd_num < NUM_CMDS)
+	{
+		res = (e->cmds[cmd_num]).fn(e, buf);
+		if ((res))
+		{
+			send(e->cs, res, ft_strlen(res), 0);
+			free(res);
+		}
+		else
+			ft_putendl("[The previous command failed or was stopped]");
+	}
+	else
+	{
+		ft_putendl("[Command not found			]");
+		msg = ft_strdup(ERROR);
+		send(e->cs, msg, ft_strlen(msg), 0);
+		free(msg);
+	}
+}
+
 void					ft_read_client(t_e *e, int cs)
 {
 	int					r;
 	char				buf[BS + 1];
-	int					i;
 	char				*res;
-	int					cmd_num;
-	char				*msg;
 
 	while ((r = read(cs, buf, BS)) > 0 && !e->quit)
 	{
@@ -53,26 +78,7 @@ void					ft_read_client(t_e *e, int cs)
 			ft_putendl("[Error message received			]");
 		else
 		{
-			i = 0;
-			cmd_num = (buf[0] - '0') - 1;
-			if (cmd_num < NUM_CMDS)
-			{
-				res = (e->cmds[cmd_num]).fn(e, buf);
-				if ((res))
-				{
-					send(cs, res, ft_strlen(res), 0);
-					free(res);
-				}
-				else
-					ft_putendl("[The previous command failed or was stopped]");
-			}
-			else
-			{
-				ft_putendl("[Command not found			]");
-				msg = ft_strdup(ERROR);
-				send(cs, msg, ft_strlen(msg), 0);
-				free(msg);
-			}
+			ft_treat_code(e, buf, res);
 		}
 		ft_bzero(buf, BS + 1);
 	}

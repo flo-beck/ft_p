@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 18:45:25 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 21:44:35 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:48:48 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static char				*ft_send_file(int sock, char *file, size_t size)
 		return (ft_strdup("SUCCESS: File sent"));
 	else
 		return (ft_strdup("ERROR: Send failed"));
-
 }
 
 static int				ft_size_ok(int sock, struct stat *stat, int fd)
@@ -72,7 +71,6 @@ static void				ft_send_error(int sock, char *code)
 		ft_error("[ERROR: Failed to map file	]");
 	else
 		ft_error("[ERROR: Failed to open file		]");
-
 	msg = ft_strjoin(ERROR, code);
 	send(sock, msg, ft_strlen(msg), 0);
 	free(msg);
@@ -82,9 +80,9 @@ char					*ft_get(t_e *e, char *buf)
 {
 	char				*name;
 	int					fd;
-	struct stat			stat;
 	char				*msg;
 	char				*file;
+	STAT				stat;
 
 	name = ft_get_name(buf);
 	if ((fd = open(name, O_RDONLY)) > 0)

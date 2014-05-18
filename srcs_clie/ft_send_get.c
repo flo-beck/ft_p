@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/17 15:56:20 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 21:43:46 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:24:16 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "ftp.h"
-
-/*
-SEND REQUEST
-RECEIVE SIZE /ERR
-PREPARE NF AND MALLOC BUF
-SEND OK
-RECEIVE FILE
-WRITE FILE
-SEND OK
-RECEIVE OK
-*/
 
 int						ft_receive_ok(int sock, char *buf, size_t size)
 {
@@ -61,7 +50,7 @@ int						ft_create_file(char *code)
 
 int						ft_check_ok(int sock, char *receive, int nf)
 {
-	if (!receive || nf < 0 )
+	if (!receive || nf < 0)
 	{
 		if (receive)
 		{
@@ -79,7 +68,7 @@ int						ft_check_ok(int sock, char *receive, int nf)
 	return (1);
 }
 
-int						ft_prepare(char *code, int sock, char * buf, t_nf *new)
+int						ft_prepare(char *code, int sock, char *buf, t_nf *new)
 {
 	if (!buf[CODE_LEN])
 	{

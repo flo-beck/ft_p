@@ -6,13 +6,12 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/18 13:25:38 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 20:43:21 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:04:59 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
-#include "libft.h"
 #include "ftp.h"
 
 static void				ft_free_e(t_e **e)
@@ -28,7 +27,6 @@ static void				ft_free_e(t_e **e)
 
 void					ft_closedown(t_e *e)
 {
-/*	printf("IN CLOSEDOWN\n");*/
 	if (e->in_son)
 		ft_putendl("[Connection closed			]");
 	else

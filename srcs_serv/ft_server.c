@@ -6,11 +6,10 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/12 12:04:11 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 21:39:02 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:14:05 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h> /* TAKE OUT? */
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -69,12 +68,12 @@ int						create_server(int port)
 	return (sock);
 }
 
-int							main(int ac, char **av, char **envp)
+int						main(int ac, char **av, char **envp)
 {
 	t_e						*e;
 
 	if (ac != 2)
-		return(usage(av[0]));
+		return (usage(av[0]));
 	if (!(e = ft_get_e()))
 		return (ft_error("Malloc failed"));
 	ft_init_e(e, envp);

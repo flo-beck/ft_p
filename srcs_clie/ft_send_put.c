@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/17 19:16:40 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 21:43:20 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 22:42:38 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,12 @@
 #include <sys/stat.h>
 #include "ftp.h"
 
-static char				*ft_send_file(int sock, char *file, size_t size)
+static void				ft_error_msg(char *msg)
+{
+	ft_putendl(msg);
+}
+
+static char				*ft_transfer(int sock, char *file, size_t size)
 {
 	char				reply[BS + 1];
 
@@ -41,43 +46,40 @@ static void				ft_send_error(int sock, char *code)
 	send(sock, msg, ft_strlen(msg), 0);
 }
 
+static void				ft_send_file(int sock, char *file, t_nf *new)
+{
+	char				buf[BS + 1];
+
+	ft_bzero(buf, BS + 1);
+	ft_transfer(sock, file, new->size);
+	recv(sock, buf, new->size, 0);
+	if (ft_strncmp(buf, OK, CODE_LEN))
+		ft_putendl("ERROR: PUT incomplete");
+	else
+		ft_putendl("SUCCESS: PUT completed");
+}
+
 void					ft_send_put(char *code, int sock)
 {
-	int					fd;
-	char				*name;
-	size_t				size;
-	struct stat			stat;
+	t_nf				new;
+	STAT				stat;
 	char				*file;
 	char				buf[BS + 1];
 
-
-	name = &code[CODE_LEN];
-	if ((fd = open(name, O_RDONLY)) < 0)
-	{
-		ft_putendl("ERROR: No such file, or permission denied");
-		return ;
-	}
-	fstat(fd, &stat);
-	code = ft_strjoin(code, ft_strjoin(" ", ft_itoa(stat.st_size)));
+	new.name = &code[CODE_LEN];
+	if ((new.fd = open(new.name, O_RDONLY)) < 0)
+		return (ft_error_msg("ERROR: No such file, or permission denied"));
+	fstat(new.fd, &stat);
+	new.size = stat.st_size;
+	code = ft_strjoin(code, ft_strjoin(" ", ft_itoa(new.size)));
 	ft_bzero(buf, BS + 1);
 	send(sock, code, ft_strlen(code), 0);
-	recv(sock, buf, size, 0);
+	recv(sock, buf, new.size, 0);
 	if (ft_strncmp(buf, OK, CODE_LEN))
-	{
-		ft_putendl("ERROR: File too large or already exists");
-		return ;
-	}
-	if ((file = mmap(0, stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0))
+		return (ft_error_msg("ERROR: File too large or already exists"));
+	if ((file = mmap(0, stat.st_size, PROT_READ, MAP_PRIVATE, new.fd, 0))
 			!= MAP_FAILED)
-	{
-		ft_bzero(buf, BS + 1);
-		ft_send_file(sock, file, stat.st_size);
-		recv(sock, buf, size, 0);
-		if (ft_strncmp(buf, OK, CODE_LEN))
-			ft_putendl("ERROR: PUT incomplete");
-		else
-			ft_putendl("SUCCESS: PUT completed");
-	}
+		ft_send_file(sock, file, &new);
 	else
 		ft_send_error(sock, NO_MAP);
 }
