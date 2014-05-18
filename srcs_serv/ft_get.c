@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 18:45:25 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/18 22:48:48 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 23:08:08 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,16 @@ char					*ft_get(t_e *e, char *buf)
 	int					fd;
 	char				*msg;
 	char				*file;
-	STAT				stat;
+	STAT				stats;
 
 	name = ft_get_name(buf);
 	if ((fd = open(name, O_RDONLY)) > 0)
 	{
-		if (ft_size_ok(e->cs, &stat, fd) == 1)
+		if (ft_size_ok(e->cs, &stats, fd) == 1)
 		{
-			if ((file = mmap(0, stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0))
+			if ((file = mmap(0, stats.st_size, PROT_READ, MAP_PRIVATE, fd, 0))
 					!= MAP_FAILED)
-				return (ft_send_file(e->cs, file, stat.st_size));
+				return (ft_send_file(e->cs, file, stats.st_size));
 			else
 				ft_send_error(e->cs, NO_MAP);
 		}
