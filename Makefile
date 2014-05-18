@@ -6,7 +6,7 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/18 14:29:16 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/18 23:16:27 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,10 +53,10 @@ all: libft server client
 libft:
 	$(MAKE) -C libft
 
-$(NAME_S): $(DIR_OBJ) $(OBJ_S)
+$(NAME_S): $(DIR_OBJ) $(OBJ_S) libft
 	$(CC) $(FLAGS) $(OBJ_S) $(LIBS) -o $(NAME_S)
 
-$(NAME_C): $(DIR_OBJ) $(OBJ_C)
+$(NAME_C): $(DIR_OBJ) $(OBJ_C) libft
 	$(CC) $(FLAGS) $(OBJ_C) $(LIBS) -o $(NAME_C)
 
 $(DIR_OBJ) :
