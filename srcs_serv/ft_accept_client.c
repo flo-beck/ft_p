@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 11:14:27 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/17 20:36:04 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 21:29:03 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,11 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "libft.h"
 #include "ftp.h"
 
 t_cmd					*ft_get_cmds(void)
 {
-	t_cmd				*cmds = NULL;
+	static t_cmd		*cmds = NULL;
 
 	if (!cmds)
 	{
@@ -44,34 +43,40 @@ void					ft_read_client(t_e *e, int cs)
 	int					i;
 	char				*res;
 	int					cmd_num;
+	char				*msg;
 
 	while ((r = read(cs, buf, BS)) > 0 && !e->quit)
 	{
 		buf[r] = '\0';
-		printf("buf received %s\n",buf );
-		i = 0;
-		cmd_num = (buf[0] - '0') - 1;
-		printf("CMD_NUM %d\n",cmd_num );
-		if (cmd_num < NUM_CMDS)
-		{
-			printf("executing %d \n", cmd_num );
-			res = (e->cmds[cmd_num]).fn(e, buf);
-			if ((res))
-				send(cs, res, ft_strlen(res), 0);
-			else
-			{
-				printf("THE PREVIOUS COMMAND FAILED OR WAS STOPPED\n");
-				/*send(cs, "888\0", 4, 0);*/
-			}
-		}
+		res = NULL;
+		if (!strncmp(ERROR, buf, CODE_LEN))
+			ft_putendl("[Error message received			]");
 		else
 		{
-			printf("Command not found\n");
-			send(cs, "999\0", 4, 0);
+			i = 0;
+			cmd_num = (buf[0] - '0') - 1;
+			if (cmd_num < NUM_CMDS)
+			{
+				res = (e->cmds[cmd_num]).fn(e, buf);
+				if ((res))
+				{
+					send(cs, res, ft_strlen(res), 0);
+					free(res);
+				}
+				else
+					ft_putendl("[The previous command failed or was stopped]");
+			}
+			else
+			{
+				ft_putendl("[Command not found			]");
+				msg = ft_strdup(ERROR);
+				send(cs, msg, ft_strlen(msg), 0);
+				free(msg);
+			}
 		}
 		ft_bzero(buf, BS + 1);
 	}
-	printf("FINISHED READ OR RECEIVED QUIT - I.E. OUT OF WHILE\n");
+	ft_putendl("[Closing connection			]");
 }
 
 void					ft_accept_client(t_e *e)
@@ -84,12 +89,13 @@ void					ft_accept_client(t_e *e)
 	client_socket = accept(e->sock, (struct sockaddr *)&csin, &cslen);
 	if (-1 == (pid = fork()))
 		return ;
-	if (pid == 0) /*fils*/
+	if (pid == 0)
 	{
+		e->in_son = 1;
 		e->cs = client_socket;
 		ft_read_client(e, client_socket);
 		close(client_socket);
 	}
-	else /*pere*/
+	else
 		ft_accept_client(e);
 }

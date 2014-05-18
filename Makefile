@@ -6,13 +6,13 @@
 #    By: fbeck <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/22 12:38:40 by fbeck             #+#    #+#              #
-#    Updated: 2014/05/17 19:52:42 by fbeck            ###   ########.fr        #
+#    Updated: 2014/05/18 14:29:16 by fbeck            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME_S				= server
 NAME_C				= client
-CC					= gcc
+CC					= clang
 FLAGS				= -Wall -Werror -Wextra -pedantic
 INCS				= -I ./includes -I ./libft/includes
 LIBS				= -L ./libft/ -lft
@@ -30,6 +30,9 @@ SRC_SER				= srcs_serv/ft_server.c \
 					  srcs_serv/ft_put.c \
 					  srcs_serv/ft_get.c \
 					  srcs_serv/ft_pwd.c \
+					  srcs_serv/ft_signals.c \
+					  srcs_serv/ft_closedown.c \
+					  srcs_serv/ft_get_e.c \
 
 SRC_CLI				= srcs_clie/ft_client.c \
 					  srcs_clie/ft_send_get.c \

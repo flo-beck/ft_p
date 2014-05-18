@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/12 12:04:11 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/17 19:12:03 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 21:38:29 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ char				*ft_get_code(char *line, int sock)
 	else if (!ft_strncmp(line, "get ", 4) && ft_strlen(line) > 4)
 	{
 		ft_send_get(ft_strjoin(GET, &line[4]), sock);
-		return ("DONE");
+		return (ft_strdup("DONE"));
 	}
 	else if (!ft_strncmp(line, "put ", 4) && ft_strlen(line) > 4)
 	{
 		ft_send_put(ft_strjoin(PUT, &line[4]), sock);
-		return ("DONE");
+		return (ft_strdup("DONE"));
 	}
 	return (NULL);
 }
@@ -89,13 +89,12 @@ int						main(int ac, char **av)
 
 	if (ac != 3)
 		return(usage(av[0]));
-	ft_putendl("I AM THE CLIENT.");
+	ft_putendl("Initialising CLIENT");
 	port = ft_atoi(av[2]);
 	sock = create_client(av[1], port);
 	ft_putstr("client > ");
 	while((get_next_line(0, &line) > 0))
 	{
-		/*write(sock, line, ft_strlen(line));*/
 		code = ft_get_code(line, sock);
 		if (code)
 		{
@@ -103,17 +102,18 @@ int						main(int ac, char **av)
 			if (ft_strcmp(code, "DONE"))
 			{
 				send(sock, code, ft_strlen(code), 0);
-				free(code);
 				recv(sock, buf, BS, 0);
 				buf[BS] = '\0';
 				ft_putendl(buf);
-				if (!strncmp(buf, QUIT, 3))
+				if (!strncmp(buf, QUIT_MSG, 3))
 					break ;
 			}
+			free(code);
 		}
 		else
 			ft_unknown_cmd(line);
-		ft_putstr("client > ");
+		free(line);
+		ft_putstr("$client > ");
 	}
 	close(sock);
 	return (0);

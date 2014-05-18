@@ -6,7 +6,7 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/14 17:04:25 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/16 16:17:40 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 20:10:26 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 #include <stdlib.h>
 #include "libft.h"
 #include "ftp.h"
-
-void					ft_del_elem(void *content, size_t size)
-{
-	(void)size;
-	free(content);
-}
 
 size_t					ft_get_len(t_list *list)
 {
@@ -48,7 +42,7 @@ void					ft_get_str(t_list *list, char **str)
 	while (ptr)
 	{
 		n = 0;
-		if (((char *)ptr->content)[0] != '.') /*// NOT HIDDEN*/
+		if (((char *)ptr->content)[0] != '.')
 		{
 			while (((char *)ptr->content)[n])
 				(*str)[i++] = ((char *)ptr->content)[n++];
@@ -56,7 +50,6 @@ void					ft_get_str(t_list *list, char **str)
 		}
 		ptr = ptr->next;
 	}
-	/*printf("\n -------- \nSTR = %s\n ---------- \n", *str);*/
 }
 
 char					*ft_ls(t_e *e, char *buf)
@@ -73,10 +66,10 @@ char					*ft_ls(t_e *e, char *buf)
 	while ((read = readdir(dirp)))
 	{
 		ft_lstadd_end(&list,
-				ft_lstnew(read->d_name, ft_strlen(read->d_name)));
+				ft_lstnew(read->d_name, ft_strlen(read->d_name) + 1));
 	}
 	closedir(dirp);
 	ft_get_str(list, &str);
-	ft_lstdel(&list, ft_del_elem);
+	ft_lstdel(&list, ft_lstdel_elem);
 	return (str);
 }

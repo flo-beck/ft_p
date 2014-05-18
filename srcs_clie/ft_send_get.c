@@ -6,29 +6,42 @@
 /*   By: fbeck <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/17 15:56:20 by fbeck             #+#    #+#             */
-/*   Updated: 2014/05/17 20:31:58 by fbeck            ###   ########.fr       */
+/*   Updated: 2014/05/18 21:43:46 by fbeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include "ftp.h"
 
-int						ft_receive(int sock, char *buf, size_t size)
+/*
+SEND REQUEST
+RECEIVE SIZE /ERR
+PREPARE NF AND MALLOC BUF
+SEND OK
+RECEIVE FILE
+WRITE FILE
+SEND OK
+RECEIVE OK
+*/
+
+int						ft_receive_ok(int sock, char *buf, size_t size)
 {
 	size_t				res;
 
 	res = recv(sock, buf, size, 0);
 	if (!ft_strncmp(buf, ERROR, CODE_LEN))
 	{
-		ft_putstr_fd("ERROR", 2);
+		ft_putstr("ERROR");
 		if (buf[CODE_LEN] && !ft_strcmp(&buf[CODE_LEN], NO_FILE))
-			ft_putendl_fd(": No such file, or permission denied", 2);
+			ft_putendl(": No such file, or permission denied");
 		else if (buf[CODE_LEN] && !ft_strcmp(&buf[CODE_LEN], NO_MAP))
-			ft_putendl_fd(": Server failed to map file", 2);
+			ft_putendl(": Server failed to map file");
 		else
-			ft_putendl_fd(" ", 2);
+			ft_putendl(" ");
 		return (-1);
 	}
 	return (0);
@@ -40,75 +53,73 @@ int						ft_create_file(char *code)
 	int					fd;
 
 	name = &code[CODE_LEN];
-	printf("filename [%s]\n",name );
 	if (!name)
 		return (-1);
 	fd = open(name, O_WRONLY | O_CREAT | O_EXCL, 0666);
 	return (fd);
 }
 
+int						ft_check_ok(int sock, char *receive, int nf)
+{
+	if (!receive || nf < 0 )
+	{
+		if (receive)
+		{
+			ft_putendl("ERROR: File already exists");
+			free(receive);
+		}
+		if (nf > 0)
+		{
+			ft_putendl("ERROR: File too large, malloc failed");
+			close(nf);
+		}
+		send(sock, ERROR, ft_strlen(ERROR), 0);
+		return (0);
+	}
+	return (1);
+}
+
+int						ft_prepare(char *code, int sock, char * buf, t_nf *new)
+{
+	if (!buf[CODE_LEN])
+	{
+		send(sock, ft_strdup(ERROR), ft_strlen(ERROR), 0);
+		ft_putendl("ERROR: Did not receive size of file");
+		return (-1);
+	}
+	new->size = ft_atoi(&buf[CODE_LEN]);
+	new->fd = ft_create_file(code);
+	new->receive = (char *)malloc(sizeof(char) * (new->size + 1));
+	if (ft_check_ok(sock, new->receive, new->fd) == 0)
+	{
+		send(sock, ERROR, ft_strlen(ERROR), 0);
+		return (-1);
+	}
+	send(sock, OK, ft_strlen(OK), 0);
+	return (0);
+}
+
 void					ft_send_get(char *code, int sock)
 {
 	char				buf[BS + 1];
-	size_t				size;
-	char				*receive;
-	char				*msg;
-	int					nf;
+	t_nf				new;
 
 	ft_bzero(buf, BS + 1);
-	printf("code is [%s]\n",code );
 	send(sock, code, ft_strlen(code), 0);
-	if (ft_receive(sock, buf, BS) == -1)
+	if (ft_receive_ok(sock, buf, BS) == -1)
 		return ;
-/*	recv(sock, buf, BS, 0);*/
-	printf("recv [%s]\n", buf );
-	if (!ft_strncmp(GET_SIZE, buf, CODE_LEN))
-	{
-		if (!buf[CODE_LEN])
-		{
-			printf("error didnt receive len\n");
-			send(sock, ft_strdup(ERROR), ft_strlen(ERROR), 0);
-			return ;
-		}
-		size = ft_atoi(&buf[CODE_LEN]);
-		printf("size %d\n",size );
-		nf = ft_create_file(code);
-		receive = (char *)malloc(sizeof(char) * (size + 1));
-		if (!receive || nf < 0 )
-		{
-			printf("Cannot receive - too large or already exists\n");
-			if (receive)
-				free(receive);
-			if (nf > 0)
-				close(nf);
-			send(sock, ft_strdup(ERROR), ft_strlen(ERROR), 0);
-			return ;
-		}
-		else
-		{
-			/*usleep(10000000);*/
-			printf("JUST BEFORE SEND\n");
-			send(sock, OK, ft_strlen(OK), 0);
-			/*printf("NUMBER OF BYTES SENT %d\n", flo );*/
-		}
-		printf("send OK\n");
-		if (ft_receive(sock, receive, size) == -1)
-			return;
-		/*recv(sock, receive, size, 0);*/
-		ft_bzero(buf, BS + 1);
-		printf("RECEIVED : [%s]\n", receive);
-		/*if (-1 == write(nf, receive, size))
-			send(sock, ERROR, ft_strlen(ERROR), 0);
-		else*/
-		write(nf, receive, size);
-		send(sock, OK, ft_strlen(OK), 0);
-		if (ft_receive(sock, buf, BS) == -1)
-			return ;
-		/*recv(sock, buf, BS, 0);*/
-		printf("Finale msg %ss\n",buf );
-		free(receive);
-		close(nf);
-	}
+	if (ft_prepare(code, sock, buf, &new) < 0)
+		return ;
+	if (ft_receive_ok(sock, new.receive, new.size) == -1)
+		return ;
+	if (write(new.fd, new.receive, new.size) == new.size)
+		ft_putendl("SUCCESS: Get completed");
 	else
-		printf("ERROR: file does not exist\n");
+		ft_putendl("ERROR: Get incomplete");
+	ft_bzero(buf, BS + 1);
+	send(sock, OK, ft_strlen(OK), 0);
+	if (ft_receive_ok(sock, buf, BS) == -1)
+		return ;
+	free(new.receive);
+	close(new.fd);
 }
